@@ -1,3 +1,3 @@
 # CourseScheduler
 
-Schedule Courses w/ SQL DB
+Schedule Courses w/ SQL DB and a GUI
