@@ -15,8 +15,9 @@ public class CourseQueries {
     private static PreparedStatement addCourse;
     private static PreparedStatement getAllCourseCodes;
     private static PreparedStatement getCourseSeats;
+    private static PreparedStatement removeCourse;
     private static ResultSet resultSet;
-    // currentSemesterComboBox.getSelectedItem().toString(), courseCode.getText(), courseDescText.getText(), Integer.parseInt(numOfSeats.getText())
+   
     
     public static ArrayList<String> getAllCourseCodes(String semester){
          connection = DBConnection.getConnection();
@@ -41,6 +42,8 @@ public class CourseQueries {
         }
         return codes;
     }
+    
+    
     public static void addCourse(CourseEntry Course){
         connection = DBConnection.getConnection();
         try
@@ -51,6 +54,27 @@ public class CourseQueries {
             addCourse.setString(3, Course.getDesc());
             addCourse.setInt(4, Course.getSeats());
             addCourse.executeUpdate();
+        }
+        catch(SQLException sqlException)
+        {
+            sqlException.printStackTrace();
+        }
+        
+    }
+    
+    public static void removeCourse(String semester, String cc){
+        connection = DBConnection.getConnection();
+        try
+        {
+            removeCourse = connection.prepareStatement("delete from app.course where semester = ? and coursecode=?");
+            removeCourse.setString(1, semester);
+            removeCourse.setString(2, cc);
+            removeCourse.executeUpdate();
+            removeCourse = connection.prepareStatement("delete from app.schedule where semester=? and coursecode=?");
+            removeCourse.setString(1, semester);
+            removeCourse.setString(2, cc);
+            removeCourse.executeUpdate();
+            
         }
         catch(SQLException sqlException)
         {

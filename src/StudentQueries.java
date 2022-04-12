@@ -20,6 +20,7 @@ public class StudentQueries {
     private static PreparedStatement addStudent;
     private static PreparedStatement getAllStudents;
     private static PreparedStatement getStudent;
+    private static PreparedStatement removeStudent; 
     private static ResultSet resultSet;
     
     public static StudentEntry getStudent(String studentID){
@@ -29,13 +30,34 @@ public class StudentQueries {
         {
            addStudent = connection.prepareStatement("select * from app.student where studentid = ?");
            addStudent.setString(1, studentID);
-           resultSet = addStudent.executeQuery();
+           resultSet = getStudent.executeQuery();
           return new StudentEntry(studentID, resultSet.getString(2), resultSet.getString(3));
         }
         catch(SQLException sqlException)
         {
             sqlException.printStackTrace();
             return null;
+        }
+         
+    }
+    public static void removeStudent(String studentID){
+        connection = DBConnection.getConnection();
+        
+        try
+        {
+           removeStudent = connection.prepareStatement("delete from app.student where studentid= ?");
+           
+          
+           removeStudent.executeUpdate();
+           removeStudent = connection.prepareStatement("delete from app.schedule where studentid=?");
+           removeStudent.setString(1, studentID);
+           removeStudent.executeUpdate();
+      
+        }
+        catch(SQLException sqlException)
+        {
+            sqlException.printStackTrace();
+         
         }
          
     }
@@ -64,9 +86,9 @@ public class StudentQueries {
         ArrayList<StudentEntry> students = new ArrayList<>();
         try
         {
-            addStudent = connection.prepareStatement("select * from app.student");
+           getAllStudents = connection.prepareStatement("select * from app.student");
            
-           resultSet = addStudent.executeQuery();
+           resultSet = getAllStudents.executeQuery();
            
            while(resultSet.next())
             {

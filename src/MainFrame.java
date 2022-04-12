@@ -56,7 +56,7 @@ public class MainFrame extends javax.swing.JFrame {
         }
         studentIDComboBox.setModel(new javax.swing.DefaultComboBoxModel(stID.toArray()));
         studentID_MS.setModel(new javax.swing.DefaultComboBoxModel(stID.toArray()));
-        
+        rsStudentComboBox.setModel(new javax.swing.DefaultComboBoxModel(stID.toArray()));
      
        
     }
@@ -64,9 +64,10 @@ public class MainFrame extends javax.swing.JFrame {
      public void rebuildCourseComboBoxes(String Semester)
     {
         ArrayList<String> courses = CourseQueries.getAllCourseCodes(Semester);
-       
-        courseComboBox.setModel(new javax.swing.DefaultComboBoxModel(courses.toArray()));
-        
+        javax.swing.DefaultComboBoxModel model = new javax.swing.DefaultComboBoxModel(courses.toArray());
+        vcrClassComboBox.setModel(model);
+        courseComboBox.setModel(model);
+        rcCComboBox.setModel(model);
       
     }
     
@@ -103,6 +104,21 @@ public class MainFrame extends javax.swing.JFrame {
         studentSchedule.setDefaultEditor(Object.class, null);
         studentSchedule.setModel(model);
     }
+    
+        public void rebuildCourseRosterTable(String semester, String courseCode) {
+        ArrayList<ScheduleEntry> entries  = ScheduleQueries.getScheduledStudentsByCourse(semester, courseCode);
+        DefaultTableModel model = new DefaultTableModel();
+        
+        model.addColumn("Student ID");
+        model.addColumn("Scheduled @:");
+        model.addColumn("Status");
+        for (int i = 0; i < entries.size(); i++){
+            String[] data = {entries.get(i).getStudentID(), entries.get(i).getTimeStamp().toString(),  entries.get(i).getStatus()};
+            model.addRow(data);
+        }
+        vcrTable.setDefaultEditor(Object.class, null);
+        vcrTable.setModel(model);
+    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -113,6 +129,11 @@ public class MainFrame extends javax.swing.JFrame {
     private void initComponents() {
 
         jPanel8 = new javax.swing.JPanel();
+        jScrollPane4 = new javax.swing.JScrollPane();
+        jTable1 = new javax.swing.JTable();
+        jScrollPane5 = new javax.swing.JScrollPane();
+        jTable2 = new javax.swing.JTable();
+        jLabel13 = new javax.swing.JLabel();
         jLabel1 = new javax.swing.JLabel();
         jTabbedPane1 = new javax.swing.JTabbedPane();
         jPanel1 = new javax.swing.JPanel();
@@ -142,6 +163,23 @@ public class MainFrame extends javax.swing.JFrame {
         LastName = new javax.swing.JTextField();
         submitStudent = new javax.swing.JButton();
         addStudentStatus = new javax.swing.JLabel();
+        jPanel10 = new javax.swing.JPanel();
+        classCode = new javax.swing.JLabel();
+        vcrClassComboBox = new javax.swing.JComboBox<>();
+        jScrollPane6 = new javax.swing.JScrollPane();
+        vcrTable = new javax.swing.JTable();
+        vcrView = new javax.swing.JButton();
+        jPanel11 = new javax.swing.JPanel();
+        jLabel12 = new javax.swing.JLabel();
+        rsStudentComboBox = new javax.swing.JComboBox<>();
+        rsRemoveButton = new javax.swing.JButton();
+        rsStatus = new javax.swing.JLabel();
+        rsStatusText = new javax.swing.JLabel();
+        jPanel12 = new javax.swing.JPanel();
+        jLabel14 = new javax.swing.JLabel();
+        rcCComboBox = new javax.swing.JComboBox<>();
+        jButton1 = new javax.swing.JButton();
+        rcStatus = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
         jTabbedPane3 = new javax.swing.JTabbedPane();
         jPanel6 = new javax.swing.JPanel();
@@ -177,6 +215,34 @@ public class MainFrame extends javax.swing.JFrame {
             .addGap(0, 100, Short.MAX_VALUE)
         );
 
+        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ));
+        jScrollPane4.setViewportView(jTable1);
+
+        jTable2.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ));
+        jScrollPane5.setViewportView(jTable2);
+
+        jLabel13.setText("jLabel13");
+
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         jLabel1.setFont(new java.awt.Font("Comic Sans MS", 1, 30)); // NOI18N
@@ -211,7 +277,7 @@ public class MainFrame extends javax.swing.JFrame {
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(addSemesterSubmitButton)
                             .addComponent(addSemesterTextfield, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addContainerGap(368, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -224,7 +290,7 @@ public class MainFrame extends javax.swing.JFrame {
                 .addComponent(addSemesterSubmitButton)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(addSemesterStatusLabel)
-                .addContainerGap(160, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         jTabbedPane2.addTab("Add Semester", jPanel3);
@@ -347,7 +413,7 @@ public class MainFrame extends javax.swing.JFrame {
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(LastName, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE))))
                     .addComponent(addStudentStatus, javax.swing.GroupLayout.PREFERRED_SIZE, 206, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(523, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -372,6 +438,163 @@ public class MainFrame extends javax.swing.JFrame {
         );
 
         jTabbedPane2.addTab("Add Student", jPanel5);
+
+        classCode.setText("Class Code:");
+
+        vcrClassComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+
+        vcrTable.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null},
+                {null, null, null},
+                {null, null, null},
+                {null, null, null}
+            },
+            new String [] {
+                "Student ID:", "Scheduled @:", "Status"
+            }
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, true, true
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        jScrollPane6.setViewportView(vcrTable);
+        if (vcrTable.getColumnModel().getColumnCount() > 0) {
+            vcrTable.getColumnModel().getColumn(0).setResizable(false);
+        }
+
+        vcrView.setText("View");
+        vcrView.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                vcrViewActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel10Layout = new javax.swing.GroupLayout(jPanel10);
+        jPanel10.setLayout(jPanel10Layout);
+        jPanel10Layout.setHorizontalGroup(
+            jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel10Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel10Layout.createSequentialGroup()
+                        .addComponent(classCode)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(vcrClassComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(vcrView)
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(jScrollPane6, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 729, Short.MAX_VALUE)))
+        );
+        jPanel10Layout.setVerticalGroup(
+            jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel10Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(classCode)
+                    .addComponent(vcrClassComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(vcrView))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, 192, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        jTabbedPane2.addTab("View Class Roster", jPanel10);
+
+        jLabel12.setText("Student ID:");
+
+        rsStudentComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+
+        rsRemoveButton.setText("Remove");
+        rsRemoveButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                rsRemoveButtonActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel11Layout = new javax.swing.GroupLayout(jPanel11);
+        jPanel11.setLayout(jPanel11Layout);
+        jPanel11Layout.setHorizontalGroup(
+            jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel11Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel11Layout.createSequentialGroup()
+                        .addGap(50, 50, 50)
+                        .addComponent(rsStatus, javax.swing.GroupLayout.PREFERRED_SIZE, 340, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel11Layout.createSequentialGroup()
+                        .addComponent(jLabel12)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(rsStudentComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(rsRemoveButton)))
+                    .addComponent(rsStatusText, javax.swing.GroupLayout.PREFERRED_SIZE, 354, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        jPanel11Layout.setVerticalGroup(
+            jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel11Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel12)
+                    .addComponent(rsStudentComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(rsRemoveButton)
+                .addGap(40, 40, 40)
+                .addComponent(rsStatusText)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 152, Short.MAX_VALUE)
+                .addComponent(rsStatus)
+                .addContainerGap())
+        );
+
+        jTabbedPane2.addTab("Remove Student", jPanel11);
+
+        jLabel14.setText("Course ID:");
+
+        rcCComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+
+        jButton1.setText("Remove");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel12Layout = new javax.swing.GroupLayout(jPanel12);
+        jPanel12.setLayout(jPanel12Layout);
+        jPanel12Layout.setHorizontalGroup(
+            jPanel12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel12Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(rcStatus, javax.swing.GroupLayout.PREFERRED_SIZE, 398, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jPanel12Layout.createSequentialGroup()
+                        .addComponent(jLabel14, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jButton1)
+                            .addComponent(rcCComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addContainerGap(331, Short.MAX_VALUE))
+        );
+        jPanel12Layout.setVerticalGroup(
+            jPanel12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel12Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel14)
+                    .addComponent(rcCComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addComponent(jButton1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(rcStatus)
+                .addContainerGap(165, Short.MAX_VALUE))
+        );
+
+        jTabbedPane2.addTab("Remove Course", jPanel12);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -663,6 +886,7 @@ public class MainFrame extends javax.swing.JFrame {
         currentSemesterLabel.setText(currentSemesterComboBox.getSelectedItem().toString());
         rebuildCourseTable(currentSemesterComboBox.getSelectedItem().toString());
         rebuildCourseComboBoxes(currentSemesterComboBox.getSelectedItem().toString());
+        rebuildStudentCourseTable(currentSemesterLabel.getText(), studentID_MS.getSelectedItem().toString());
     }//GEN-LAST:event_changeSemesterButtonActionPerformed
 
     private void submitStudentActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_submitStudentActionPerformed
@@ -717,6 +941,26 @@ public class MainFrame extends javax.swing.JFrame {
         rebuildStudentCourseTable(currentSemesterLabel.getText(), studentID_MS.getSelectedItem().toString());
     }//GEN-LAST:event_viewScheduleButtonActionPerformed
 
+    private void vcrViewActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_vcrViewActionPerformed
+        String semester = currentSemesterLabel.getText();
+        String courseCode = vcrClassComboBox.getSelectedItem().toString();
+        rebuildCourseRosterTable(semester,courseCode);
+    }//GEN-LAST:event_vcrViewActionPerformed
+
+    private void rsRemoveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rsRemoveButtonActionPerformed
+        StudentQueries.removeStudent(rsStudentComboBox.getSelectedItem().toString());
+        rsStatusText.setText("Student " + rsStudentComboBox.getSelectedItem().toString() + " Removed");
+        rebuildStudentIDComboBox();
+    }//GEN-LAST:event_rsRemoveButtonActionPerformed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        CourseQueries.removeCourse(currentSemesterLabel.getText(), rcCComboBox.getSelectedItem().toString());
+        rcStatus.setText("Course " + rcCComboBox.getSelectedItem().toString() + " Removed");
+        rebuildCourseComboBoxes(currentSemesterLabel.getText());
+        rebuildCourseTable(currentSemesterLabel.getText());
+        rebuildStudentCourseTable(currentSemesterLabel.getText(), studentID_MS.getSelectedItem().toString());
+    }//GEN-LAST:event_jButton1ActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -762,6 +1006,7 @@ public class MainFrame extends javax.swing.JFrame {
     private javax.swing.JTextField addSemesterTextfield;
     private javax.swing.JLabel addStudentStatus;
     private javax.swing.JButton changeSemesterButton;
+    private javax.swing.JLabel classCode;
     private javax.swing.JTextField courseCode;
     private javax.swing.JComboBox<String> courseComboBox;
     private javax.swing.JLabel courseDesc;
@@ -769,9 +1014,13 @@ public class MainFrame extends javax.swing.JFrame {
     private javax.swing.JTable courseTable;
     private javax.swing.JComboBox<String> currentSemesterComboBox;
     private javax.swing.JLabel currentSemesterLabel;
+    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
+    private javax.swing.JLabel jLabel12;
+    private javax.swing.JLabel jLabel13;
+    private javax.swing.JLabel jLabel14;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -781,6 +1030,9 @@ public class MainFrame extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel10;
+    private javax.swing.JPanel jPanel11;
+    private javax.swing.JPanel jPanel12;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
@@ -792,11 +1044,22 @@ public class MainFrame extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JScrollPane jScrollPane4;
+    private javax.swing.JScrollPane jScrollPane5;
+    private javax.swing.JScrollPane jScrollPane6;
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JTabbedPane jTabbedPane2;
     private javax.swing.JTabbedPane jTabbedPane3;
+    private javax.swing.JTable jTable1;
+    private javax.swing.JTable jTable2;
     private javax.swing.JTextField numOfSeats;
     private javax.swing.JLabel numOfSeatsLabel;
+    private javax.swing.JComboBox<String> rcCComboBox;
+    private javax.swing.JLabel rcStatus;
+    private javax.swing.JButton rsRemoveButton;
+    private javax.swing.JLabel rsStatus;
+    private javax.swing.JLabel rsStatusText;
+    private javax.swing.JComboBox<String> rsStudentComboBox;
     private javax.swing.JLabel scheduleCourseStatus;
     private javax.swing.JLabel scheduledCourseStatus;
     private javax.swing.JComboBox<String> studentIDComboBox;
@@ -805,6 +1068,9 @@ public class MainFrame extends javax.swing.JFrame {
     private javax.swing.JButton submitCourse;
     private javax.swing.JButton submitSchedule;
     private javax.swing.JButton submitStudent;
+    private javax.swing.JComboBox<String> vcrClassComboBox;
+    private javax.swing.JTable vcrTable;
+    private javax.swing.JButton vcrView;
     private javax.swing.JButton viewScheduleButton;
     // End of variables declaration//GEN-END:variables
 }

@@ -63,10 +63,10 @@ public class ScheduleQueries {
         connection = DBConnection.getConnection();
         try
         {
-            getScheduleByStudent = connection.prepareStatement("select count(*) from app.schedule where semester = ? and coursecode = ?");
-            getScheduleByStudent.setString(1, semester);
-            getScheduleByStudent.setString(2, courseCode);
-            resultSet = getScheduleByStudent.executeQuery();
+            getScheduledStudentCount = connection.prepareStatement("select count(*) from app.schedule where semester = ? and coursecode = ?");
+            getScheduledStudentCount.setString(1, semester);
+            getScheduledStudentCount.setString(2, courseCode);
+            resultSet = getScheduledStudentCount.executeQuery();
             if(resultSet.next()) {
             return resultSet.getInt(1);
             }
@@ -84,19 +84,13 @@ public class ScheduleQueries {
     }
     
     
-    
-    
-    
-    
-    
-    
     public static ArrayList<ScheduleEntry> getScheduleByStudent(String semester, String studentID)
     {
         connection = DBConnection.getConnection();
         ArrayList<ScheduleEntry> schedule = new ArrayList<>();
         try
         {
-            getScheduleByStudent = connection.prepareStatement("select * from app.schedule where semester = ? and studentid= ?");
+            getScheduleByStudent = connection.prepareStatement("select * from app.schedule where semester = ? and studentid= ? order by status");
             getScheduleByStudent.setString(1, semester);
             getScheduleByStudent.setString(2, studentID);
             resultSet = getScheduleByStudent.executeQuery();
@@ -104,6 +98,32 @@ public class ScheduleQueries {
             while(resultSet.next())
             {
             schedule.add(new ScheduleEntry(semester, resultSet.getString(3), studentID, resultSet.getString(4), resultSet.getTimestamp(5)));
+            }
+        }
+        catch(SQLException sqlException)
+        {
+            sqlException.printStackTrace();
+        }
+        return schedule;
+        
+    }
+    
+    
+    
+        public static ArrayList<ScheduleEntry> getScheduledStudentsByCourse(String semester, String courseCode)
+    {
+        connection = DBConnection.getConnection();
+        ArrayList<ScheduleEntry> schedule = new ArrayList<>();
+        try
+        {
+            getScheduleByStudent = connection.prepareStatement("select * from app.schedule where semester = ? and courseCode= ? order by status");
+            getScheduleByStudent.setString(1, semester);
+            getScheduleByStudent.setString(2, courseCode);
+            resultSet = getScheduleByStudent.executeQuery();
+            
+            while(resultSet.next())
+            {
+            schedule.add(new ScheduleEntry(semester, resultSet.getString(3), resultSet.getString(2), resultSet.getString(4), resultSet.getTimestamp(5)));
             }
         }
         catch(SQLException sqlException)
