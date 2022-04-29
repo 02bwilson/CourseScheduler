@@ -46,12 +46,12 @@ public class StudentQueries {
         try
         {
            removeStudent = connection.prepareStatement("delete from app.student where studentid= ?");
-           
-          
+           removeStudent.setString(1,studentID);
            removeStudent.executeUpdate();
            removeStudent = connection.prepareStatement("delete from app.schedule where studentid=?");
            removeStudent.setString(1, studentID);
            removeStudent.executeUpdate();
+           
       
         }
         catch(SQLException sqlException)
@@ -94,6 +94,7 @@ public class StudentQueries {
             {
                 StudentEntry curS = new StudentEntry(resultSet.getString(1),resultSet.getString(2), resultSet.getString(3));
                 students.add(curS);
+                System.out.print(curS.toString());
             }
         }
         catch(SQLException sqlException)

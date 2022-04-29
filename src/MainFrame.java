@@ -22,12 +22,16 @@ public class MainFrame extends javax.swing.JFrame {
     public MainFrame() {
         initComponents();
         rebuildSemesterComboBoxes();
+        rebuildStudentIDComboBox();
         
-       if(currentSemesterComboBox.getItemCount() > 0){
+      if(currentSemesterComboBox.getItemCount() > 0){
             rebuildCourseTable(currentSemesterComboBox.getSelectedItem().toString());
             rebuildCourseComboBoxes(currentSemesterComboBox.getSelectedItem().toString());
-            rebuildStudentIDComboBox();
        }
+      else { 
+          rebuildCourseTable("");
+          rebuildCourseComboBoxes("");
+      }
        
             
     }
@@ -57,6 +61,7 @@ public class MainFrame extends javax.swing.JFrame {
         studentIDComboBox.setModel(new javax.swing.DefaultComboBoxModel(stID.toArray()));
         studentID_MS.setModel(new javax.swing.DefaultComboBoxModel(stID.toArray()));
         rsStudentComboBox.setModel(new javax.swing.DefaultComboBoxModel(stID.toArray()));
+        dcSTIDComboBox.setModel(new javax.swing.DefaultComboBoxModel(stID.toArray()));
      
        
     }
@@ -68,7 +73,7 @@ public class MainFrame extends javax.swing.JFrame {
         vcrClassComboBox.setModel(model);
         courseComboBox.setModel(model);
         rcCComboBox.setModel(model);
-      
+        dcCComboBox.setModel(model);
     }
     
     
@@ -199,6 +204,13 @@ public class MainFrame extends javax.swing.JFrame {
         studentSchedule = new javax.swing.JTable();
         studentID_MS = new javax.swing.JComboBox<>();
         viewScheduleButton = new javax.swing.JButton();
+        jPanel13 = new javax.swing.JPanel();
+        jButton2 = new javax.swing.JButton();
+        jLabel15 = new javax.swing.JLabel();
+        jLabel16 = new javax.swing.JLabel();
+        dcSTIDComboBox = new javax.swing.JComboBox<>();
+        dcCComboBox = new javax.swing.JComboBox<>();
+        dcStatus = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         currentSemesterLabel = new javax.swing.JLabel();
         currentSemesterComboBox = new javax.swing.JComboBox<>();
@@ -799,6 +811,60 @@ public class MainFrame extends javax.swing.JFrame {
 
         jTabbedPane3.addTab("My Schedule", jPanel9);
 
+        jButton2.setText("Drop");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
+
+        jLabel15.setText("Student ID:");
+
+        jLabel16.setText("Course:");
+
+        dcSTIDComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+
+        dcCComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+
+        javax.swing.GroupLayout jPanel13Layout = new javax.swing.GroupLayout(jPanel13);
+        jPanel13.setLayout(jPanel13Layout);
+        jPanel13Layout.setHorizontalGroup(
+            jPanel13Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel13Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel13Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(dcStatus, javax.swing.GroupLayout.PREFERRED_SIZE, 292, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jPanel13Layout.createSequentialGroup()
+                        .addGroup(jPanel13Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addComponent(jLabel16, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jLabel15, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 96, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel13Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jButton2)
+                            .addComponent(dcSTIDComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(dcCComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addContainerGap(413, Short.MAX_VALUE))
+        );
+        jPanel13Layout.setVerticalGroup(
+            jPanel13Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel13Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel13Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel15)
+                    .addComponent(dcSTIDComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel13Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel16)
+                    .addComponent(dcCComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addComponent(jButton2)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 40, Short.MAX_VALUE)
+                .addComponent(dcStatus)
+                .addGap(82, 82, 82))
+        );
+
+        jTabbedPane3.addTab("Drop Course", jPanel13);
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
@@ -951,6 +1017,7 @@ public class MainFrame extends javax.swing.JFrame {
         StudentQueries.removeStudent(rsStudentComboBox.getSelectedItem().toString());
         rsStatusText.setText("Student " + rsStudentComboBox.getSelectedItem().toString() + " Removed");
         rebuildStudentIDComboBox();
+        ScheduleQueries.updateSchedule(currentSemesterLabel.getText());
     }//GEN-LAST:event_rsRemoveButtonActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
@@ -960,6 +1027,13 @@ public class MainFrame extends javax.swing.JFrame {
         rebuildCourseTable(currentSemesterLabel.getText());
         rebuildStudentCourseTable(currentSemesterLabel.getText(), studentID_MS.getSelectedItem().toString());
     }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        
+        ScheduleQueries.removeSchedule(dcSTIDComboBox.getSelectedItem().toString(), currentSemesterLabel.getText(), dcCComboBox.getSelectedItem().toString());
+        dcStatus.setText("Dropped Course");
+        ScheduleQueries.updateSchedule(currentSemesterLabel.getText());
+    }//GEN-LAST:event_jButton2ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -1014,13 +1088,19 @@ public class MainFrame extends javax.swing.JFrame {
     private javax.swing.JTable courseTable;
     private javax.swing.JComboBox<String> currentSemesterComboBox;
     private javax.swing.JLabel currentSemesterLabel;
+    private javax.swing.JComboBox<String> dcCComboBox;
+    private javax.swing.JComboBox<String> dcSTIDComboBox;
+    private javax.swing.JLabel dcStatus;
     private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel13;
     private javax.swing.JLabel jLabel14;
+    private javax.swing.JLabel jLabel15;
+    private javax.swing.JLabel jLabel16;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -1033,6 +1113,7 @@ public class MainFrame extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel10;
     private javax.swing.JPanel jPanel11;
     private javax.swing.JPanel jPanel12;
+    private javax.swing.JPanel jPanel13;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;

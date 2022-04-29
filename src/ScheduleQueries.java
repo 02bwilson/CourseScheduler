@@ -22,6 +22,8 @@ public class ScheduleQueries {
     private static PreparedStatement addScheduleEntry;
     private static PreparedStatement getScheduleByStudent;
     private static PreparedStatement getScheduledStudentCount;
+    private static PreparedStatement updateSchedule;
+    private static ResultSet resultSetUpdate;
     private static ResultSet resultSet;
     
     public static boolean addScheduleEntry(String Semester, String course, String stid)
@@ -63,7 +65,7 @@ public class ScheduleQueries {
         connection = DBConnection.getConnection();
         try
         {
-            getScheduledStudentCount = connection.prepareStatement("select count(*) from app.schedule where semester = ? and coursecode = ?");
+            getScheduledStudentCount = connection.prepareStatement("select count(*) from app.schedule where semester = ? and coursecode = ? and status='S'");
             getScheduledStudentCount.setString(1, semester);
             getScheduledStudentCount.setString(2, courseCode);
             resultSet = getScheduledStudentCount.executeQuery();
@@ -83,6 +85,30 @@ public class ScheduleQueries {
         
     }
     
+       public static int getScheduledWaitlistStudentCount(String semester, String courseCode)
+       {
+        connection = DBConnection.getConnection();
+        try
+        {
+            getScheduledStudentCount = connection.prepareStatement("select count(*) from app.schedule where semester = ? and coursecode = ? and status = 'W'");
+            getScheduledStudentCount.setString(1, semester);
+            getScheduledStudentCount.setString(2, courseCode);
+            resultSet = getScheduledStudentCount.executeQuery();
+            if(resultSet.next()) {
+            return resultSet.getInt(1);
+            }
+            else {
+                return 0;
+            }
+        }
+        catch(SQLException sqlException)
+        {
+            sqlException.printStackTrace();
+            return 0;
+        }
+       
+        
+    }
     
     public static ArrayList<ScheduleEntry> getScheduleByStudent(String semester, String studentID)
     {
@@ -123,7 +149,7 @@ public class ScheduleQueries {
             
             while(resultSet.next())
             {
-            schedule.add(new ScheduleEntry(semester, resultSet.getString(3), resultSet.getString(2), resultSet.getString(4), resultSet.getTimestamp(5)));
+            schedule.add(new ScheduleEntry(semester, resultSet.getString(2), resultSet.getString(3), resultSet.getString(4), resultSet.getTimestamp(5)));
             }
         }
         catch(SQLException sqlException)
@@ -133,6 +159,59 @@ public class ScheduleQueries {
         return schedule;
         
     }
+        
+    public static void removeSchedule(String stid, String semester, String cc){
+        connection = DBConnection.getConnection();
+       
+        try
+        {
+            updateSchedule = connection.prepareStatement("delete from app.schedule where semester = ? and studentid= ? and coursecode = ?");
+            updateSchedule.setString(1, semester);
+            updateSchedule.setString(2, stid);
+            updateSchedule.setString(3, cc);
+            updateSchedule.executeUpdate();
+            
+            
+        }
+        catch(SQLException sqlException)
+        {
+            sqlException.printStackTrace();
+        }
+        
+    }
+        
+    
+         public static void updateSchedule(String semester)
+        {
+        connection = DBConnection.getConnection();
+       
+        try
+        {
+            updateSchedule = connection.prepareStatement("select * from app.schedule where semester = ? and status = 'W' order by timestamp");
+            updateSchedule.setString(1, semester);
+            resultSetUpdate = updateSchedule.executeQuery();
+            
+            
+            
+            while(resultSetUpdate.next()){
+            if (getScheduledStudentCount(semester, resultSetUpdate.getString(2)) < CourseQueries.getCourseSeats(semester, resultSetUpdate.getString(2))){
+                
+                updateSchedule = connection.prepareStatement("update app.schedule set status = 'S' where semester = ? and studentid=?");
+                updateSchedule.setString(1, semester);
+                updateSchedule.setString(2, resultSetUpdate.getString(3));
+                updateSchedule.executeUpdate();
+            }
+            }
+            
+        }
+        catch(SQLException sqlException)
+        {
+            sqlException.printStackTrace();
+        }
+        
+        
+    }
+        
     
     
 }
